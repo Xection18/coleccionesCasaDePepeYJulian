@@ -1,10 +1,20 @@
 import cosas.*
+import cuentasBancarias.*
 
 object casa {
   const cosas = []
+  var cuentaBancaria = cuentaCorriente
 
+  method cambiarCuentaBancaria(cuenta) {
+    cuentaBancaria = cuenta
+  }
   method cosasCompradas() = cosas
-  method comprar(cosa) = cosas.add(cosa)
+  method comprar(cosa){
+    if (cuentaBancaria.saldo() >= cosa.precio()) {
+        cosas.add(cosa)
+        cuentaBancaria.extraer(cosa.precio())
+    }
+  }
   method cantidadDeCosasCompradas() = cosas.size()
   method tieneComida() = cosas.any({cosa => cosa.esComida()})
   method vieneDeEquiparse() {
@@ -14,6 +24,10 @@ object casa {
         return  false 
     }
   }
+  method gastar(importe) {
+    cuentaBancaria.extraer(importe)
+  }
+  method dineroDisponible() = cuentaBancaria.saldo()
   method estaVaciaLaLista() = cosas.isEmpty()
   method ultimoElementoComprado() = cosas.last()
   method esDerrochona() = cosas.sum({cosa => cosa.precio()}) >= 90000
